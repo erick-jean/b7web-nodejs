@@ -1,0 +1,17 @@
+import express, { Router } from "express";
+import helmet from "helmet";
+import router from "./routes";
+
+const server = express();
+
+server.use(helmet());
+server.use(express.json());
+
+server.use(express.urlencoded({ extended: true }));
+
+server.use("/", router);
+
+server.listen(3000, () => {
+  console.log("Server is running on port http://localhost:3000");
+  console.log("Press Ctrl+C to stop the server.");
+});
