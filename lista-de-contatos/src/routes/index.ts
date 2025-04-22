@@ -25,4 +25,35 @@ router.post("/contato", async (req: Request, res: Response) => {
   res.status(201).json({ contato: name });
 });
 
+
+router.get("/contatos", async (req: Request, res: Response) => {
+    let list: string[] = [];
+    try {
+      const data = await readFile(dataSource, { encoding: "utf8" });
+      list = data.split("\n");
+    } catch (error) {}
+    res.status(200).json({ contatos: list });
+});
+
+
+router.delete("/contato", async (req: Request, res: Response) => {
+    const { name } = req.query;
+
+    if (!name) {
+      return res
+        .status(400)
+        .json({ error: "Precisa mandar um nome para excluir" });
+    }
+    let list: string[] = [];
+    try {
+      const data = await readFile(dataSource, { encoding: "utf8" });
+      list = data.split("\n");
+    } catch (error) {}
+    list = list.filter((item) => item.toLocaleLowerCase() !== (name as string).toLocaleLowerCase());
+
+    await writeFile(dataSource, list.join("\n"));
+    res.status(200).json({ contato: name });
+
+});
+
 export default router;
