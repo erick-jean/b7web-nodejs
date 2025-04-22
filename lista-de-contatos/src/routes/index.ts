@@ -1,8 +1,6 @@
 import express, { Request, Response } from "express";
 import { readFile, writeFile } from "fs/promises";
 
-const dataSource = "./data/list.txt";
-
 const router = express.Router();
 
 router.post("/contato", async (req: Request, res: Response) => {
@@ -15,7 +13,7 @@ router.post("/contato", async (req: Request, res: Response) => {
   }
 
   //processamento dos dados
-  let list: string[] = [];
+
   try {
     const data = await readFile(dataSource, { encoding: "utf8" });
     list = data.split("\n");
