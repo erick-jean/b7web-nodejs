@@ -1,11 +1,9 @@
 import express, { Request, Response } from "express";
-import { readFile, writeFile } from "fs/promises";
-import { getContacts } from "../services/contact";
+import { createContact, deleteContact, getContacts } from "../services/contact";
 
 const router = express.Router();
 
-const dataSource = "./data/list.txt";
-
+//Rota para criar um contato
 router.post("/contato", async (req: Request, res: Response) => {
   const { name } = req.body;
 
@@ -14,19 +12,17 @@ router.post("/contato", async (req: Request, res: Response) => {
       .status(400)
       .json({ error: "Nome precisa ter pelo menos 2 caracteres" });
   }
-
-  let list = await getContacts();
-
-  list.push(name);
-  await writeFile(dataSource, list.join("\n"));
+  await createContact(name);
   res.status(201).json({ contato: name });
 });
 
+//Rota para listar os contatos
 router.get("/contatos", async (req: Request, res: Response) => {
   let list = await getContacts();
   res.status(200).json({ contatos: list });
 });
 
+//Rota para excluir um contato
 router.delete("/contato", async (req: Request, res: Response) => {
   const { name } = req.query;
 
@@ -35,12 +31,7 @@ router.delete("/contato", async (req: Request, res: Response) => {
       .status(400)
       .json({ error: "Precisa mandar um nome para excluir" });
   }
-  let list = await getContacts();
-  list = list.filter(
-    (item) => item.toLocaleLowerCase() !== (name as string).toLocaleLowerCase()
-  );
-
-  await writeFile(dataSource, list.join("\n"));
+  await deleteContact(name as string);
   res.status(200).json({ contato: name });
 });
 

@@ -1,4 +1,4 @@
-import { readFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 
 const dataSource = "./data/list.txt";
 
@@ -9,4 +9,18 @@ export const getContacts = async () => {
     list = data.split("\n");
   } catch (error) {}
   return list;
+};
+
+export const createContact = async (name: string) => {
+  let list = await getContacts();
+  list.push(name);
+  await writeFile(dataSource, list.join("\n"));
+};
+
+export const deleteContact = async (name: string) => {
+  let list = await getContacts();
+  list = list.filter(
+    (item) => item.toLocaleLowerCase() !== name.toLocaleLowerCase()
+  );
+  await writeFile(dataSource, list.join("\n"));
 };
